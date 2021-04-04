@@ -1,7 +1,7 @@
-import { useState } from "react";
+import useStorageState from "./useStorageState";
 
 function useBookmarksState() {
-  const [bookmarks, setBookmarks] = useState([]);
+  const [bookmarks, setBookmarks] = useStorageState("bookmarks", []);
 
   const handlers = {
     add(id) {
