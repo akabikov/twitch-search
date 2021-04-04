@@ -3,7 +3,7 @@ import axios from "axios";
 const API_SEARCH_URL = (channelName) =>
   `https://api.twitch.tv/kraken/search/channels?query=${channelName}`;
 const API_VIDEOS_URL = (channelId) =>
-  `https://api.twitch.tv/kraken/channels/${channelId}/videos`;
+  `https://api.twitch.tv/kraken/channels/${channelId}/videos?limit=20`;
 
 const API_HEADERS = {
   Accept: "application/vnd.twitchtv.v5+json",
@@ -11,7 +11,6 @@ const API_HEADERS = {
 };
 
 const Index = ({ data }) => {
-  console.log(data);
   const previews = data.map(({ id, title, url, preview }) => (
     <li key={id}>
       <img src={preview} alt={title} />
@@ -20,9 +19,19 @@ const Index = ({ data }) => {
       </a>
     </li>
   ));
+
   return (
     <>
       <h1>Twitch search project</h1>
+      <form>
+        <input
+          type='search'
+          name='q'
+          placeholder='Search...'
+          autoComplete='off'
+        />
+        <input type='submit' value='Search' />
+      </form>
       <ul>{previews}</ul>
     </>
   );
@@ -36,7 +45,7 @@ export async function getServerSideProps({ query }) {
     channelName
   );
   const ids = channels.map(({ _id }) => _id);
-  const { videos, _total: videosTotal } = await getVideoByChannelId(ids[0]);
+  const { videos, _total: videosTotal } = await getVideosByChannelId(ids[0]);
   const data = videos.map(({ title, url, preview, _id }) => ({
     id: _id,
     title,
@@ -57,7 +66,7 @@ async function getChannelsByName(channelName) {
   }
 }
 
-async function getVideoByChannelId(channelId) {
+async function getVideosByChannelId(channelId) {
   try {
     const response = await axios.get(API_VIDEOS_URL(channelId), {
       headers: API_HEADERS,
