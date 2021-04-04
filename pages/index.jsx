@@ -1,5 +1,6 @@
 import axios from "axios";
 import SearchForm from "../components/SearchForm";
+import PreviewList from "../components/PreviewList";
 
 const API_SEARCH_URL = (channelName) =>
   `https://api.twitch.tv/kraken/search/channels?query=${channelName}`;
@@ -11,21 +12,12 @@ const API_HEADERS = {
   "Client-ID": process.env.CLIENT_ID,
 };
 
-const Index = ({ data, channelName }) => {
-  const previews = data.map(({ id, title, url, preview }) => (
-    <li key={id}>
-      <img src={preview} alt={title} />
-      <a target='_blank' rel='noopener noreferrer' href={url}>
-        {title}
-      </a>
-    </li>
-  ));
-
+const Index = ({ previews, channelName }) => {
   return (
     <>
       <h1>Twitch search project</h1>
       <SearchForm value={channelName} />
-      <ul>{previews}</ul>
+      <PreviewList list={previews} />
     </>
   );
 };
@@ -39,13 +31,13 @@ export async function getServerSideProps({ query }) {
   );
   const ids = channels.map(({ _id }) => _id);
   const { videos, _total: videosTotal } = await getVideosByChannelId(ids[0]);
-  const data = videos.map(({ title, url, preview, _id }) => ({
+  const previews = videos.map(({ title, url, preview, _id }) => ({
     id: _id,
     title,
     url: url,
     preview: preview.small,
   }));
-  return { props: { data, channelName } };
+  return { props: { previews, channelName } };
 }
 
 async function getChannelsByName(channelName) {
