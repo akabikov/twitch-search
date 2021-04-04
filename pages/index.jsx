@@ -1,6 +1,8 @@
 import axios from "axios";
 import SearchForm from "../components/SearchForm";
 import PreviewList from "../components/PreviewList";
+import Bookmarks from "../components/Bookmarks";
+import useBookmarksState from "../hooks/useBookmarksState";
 
 const API_SEARCH_URL = (channelName) =>
   `https://api.twitch.tv/kraken/search/channels?query=${channelName}`;
@@ -13,11 +15,14 @@ const API_HEADERS = {
 };
 
 const Index = ({ previews, channelName }) => {
+  const [bookmarks, handlers] = useBookmarksState();
+
   return (
     <>
       <h1>Twitch search project</h1>
       <SearchForm value={channelName} />
-      <PreviewList list={previews} />
+      <PreviewList list={previews} handleAddBookmark={handlers.add} />
+      <Bookmarks list={bookmarks} handleRemoveBookmark={handlers.remove} />
     </>
   );
 };
@@ -32,7 +37,7 @@ export async function getServerSideProps({ query }) {
   const ids = channels.map(({ _id }) => _id);
   const { videos, _total: videosTotal } = await getVideosByChannelId(ids[0]);
   const previews = videos.map(({ title, url, preview, _id }) => ({
-    id: _id,
+    id: _id.slice(1),
     title,
     url: url,
     preview: preview.small,

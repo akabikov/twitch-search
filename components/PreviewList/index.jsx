@@ -1,8 +1,8 @@
 import PreviewItem from "./PreviewItem";
 
-function PreviewList({ list }) {
-  const previews = list.map(({ id, ...args }) => (
-    <PreviewItem key={id} {...args} />
+function PreviewList({ list, handleAddBookmark }) {
+  const previews = list.map((item) => (
+    <PreviewItem key={item.id} {...item} addBookmark={handleAddBookmark} />
   ));
 
   return <ul>{previews}</ul>;
