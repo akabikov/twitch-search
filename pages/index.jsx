@@ -1,4 +1,5 @@
 import axios from "axios";
+import SearchForm from "../components/SearchForm";
 
 const API_SEARCH_URL = (channelName) =>
   `https://api.twitch.tv/kraken/search/channels?query=${channelName}`;
@@ -10,7 +11,7 @@ const API_HEADERS = {
   "Client-ID": process.env.CLIENT_ID,
 };
 
-const Index = ({ data }) => {
+const Index = ({ data, channelName }) => {
   const previews = data.map(({ id, title, url, preview }) => (
     <li key={id}>
       <img src={preview} alt={title} />
@@ -23,15 +24,7 @@ const Index = ({ data }) => {
   return (
     <>
       <h1>Twitch search project</h1>
-      <form>
-        <input
-          type='search'
-          name='q'
-          placeholder='Search...'
-          autoComplete='off'
-        />
-        <input type='submit' value='Search' />
-      </form>
+      <SearchForm value={channelName} />
       <ul>{previews}</ul>
     </>
   );
@@ -52,7 +45,7 @@ export async function getServerSideProps({ query }) {
     url: url,
     preview: preview.small,
   }));
-  return { props: { data } };
+  return { props: { data, channelName } };
 }
 
 async function getChannelsByName(channelName) {
