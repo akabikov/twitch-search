@@ -11,7 +11,11 @@ const Index = ({ previews, channelName }) => {
     <>
       <h1>Twitch search project</h1>
       <SearchForm value={channelName} />
-      <PreviewList list={previews} addBookmark={handlers.add} />
+      {previews.length ? (
+        <PreviewList list={previews} addBookmark={handlers.add} />
+      ) : (
+        <div>Nothing found</div>
+      )}
       <Bookmarks list={bookmarks} removeBookmark={handlers.remove} />
     </>
   );
