@@ -1,0 +1,43 @@
+.PreviewItem {
+  position: relative;
+  width: 100%;
+  max-width: 640px;
+
+  .link {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+    position: relative;
+
+    .title {
+      display: none;
+      position: absolute;
+      text-align: center;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 100%;
+    }
+
+    &:hover {
+      cursor: pointer;
+
+      .image {
+        opacity: 0.3;
+      }
+
+      .title {
+        display: block;
+      }
+    }
+  }
+
+  .image {
+    width: 100%;
+  }
+
+  .button {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+}

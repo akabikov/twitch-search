@@ -1,4 +1,5 @@
 import PreviewItem from "./PreviewItem";
+import styles from "./index.module.scss";
 
 function PreviewList({ list, addBookmark, removeBookmark }) {
   const previews = list.map((item) => (
@@ -10,7 +11,7 @@ function PreviewList({ list, addBookmark, removeBookmark }) {
     />
   ));
 
-  return <ul>{previews}</ul>;
+  return <ul className={styles.PreviewList}>{previews}</ul>;
 }
 
 export default PreviewList;
