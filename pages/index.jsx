@@ -17,7 +17,7 @@ const Index = ({ previews, channelName }) => {
       {previews.length ? (
         <PreviewList list={previews} addBookmark={handlers.add} />
       ) : (
-        <div>Nothing found</div>
+        channelName && <div>По данному запросу ничего не найдено</div>
       )}
       <Bookmarks
         list={bookmarks}
@@ -32,9 +32,22 @@ export default Index;
 
 export async function getServerSideProps({ query }) {
   const channelName = query.q;
+  if (!channelName) {
+    return {
+      props: { previews: [], channelName: "" },
+    };
+  }
+
   const { channels, _total: channelsTotal } = await getChannelsByName(
     channelName
   );
+
+  if (!channelsTotal) {
+    return {
+      props: { previews: [], channelName },
+    };
+  }
+
   const ids = channels.map(({ _id }) => _id);
   const { videos, _total: videosTotal } = await getVideosByChannelId(ids[0]);
   const previews = videos.map(({ title, url, preview, _id }) => ({
