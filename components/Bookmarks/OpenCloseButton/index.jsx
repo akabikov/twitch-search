@@ -4,9 +4,10 @@ function OpenCloseButton({ toggle }) {
   return (
     <button
       className={styles.OpenCloseButton}
+      title='Bookmarks'
       onClick={() => toggle((state) => !state)}
     >
-      Bookmarks
+      ★
     </button>
   );
 }

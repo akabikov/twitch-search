@@ -18,7 +18,7 @@ function PreviewItem({ id, title, url, preview, addBookmark, removeBookmark }) {
           className={styles.button}
           onClick={() => addBookmark(id)}
         >
-          Add to bookmarks
+          Add to ★
         </button>
       )}
       {removeBookmark && (
@@ -27,7 +27,7 @@ function PreviewItem({ id, title, url, preview, addBookmark, removeBookmark }) {
           className={styles.button}
           onClick={() => removeBookmark(id)}
         >
-          Remove from bookmarks
+          Remove
         </button>
       )}
     </li>
