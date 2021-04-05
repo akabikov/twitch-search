@@ -1,18 +1,8 @@
-import axios from "axios";
 import SearchForm from "../components/SearchForm";
 import PreviewList from "../components/PreviewList";
 import Bookmarks from "../components/Bookmarks";
 import useBookmarksState from "../hooks/useBookmarksState";
-
-const API_SEARCH_URL = (channelName) =>
-  `https://api.twitch.tv/kraken/search/channels?query=${channelName}`;
-const API_VIDEOS_URL = (channelId) =>
-  `https://api.twitch.tv/kraken/channels/${channelId}/videos?limit=20`;
-
-const API_HEADERS = {
-  Accept: "application/vnd.twitchtv.v5+json",
-  "Client-ID": process.env.CLIENT_ID,
-};
+import { getChannelsByName, getVideosByChannelId } from "../helpers/loading";
 
 const Index = ({ previews, channelName }) => {
   const [bookmarks, handlers] = useBookmarksState();
@@ -21,8 +11,8 @@ const Index = ({ previews, channelName }) => {
     <>
       <h1>Twitch search project</h1>
       <SearchForm value={channelName} />
-      <PreviewList list={previews} handleAddBookmark={handlers.add} />
-      <Bookmarks list={bookmarks} handleRemoveBookmark={handlers.remove} />
+      <PreviewList list={previews} addBookmark={handlers.add} />
+      <Bookmarks list={bookmarks} removeBookmark={handlers.remove} />
     </>
   );
 };
@@ -43,26 +33,4 @@ export async function getServerSideProps({ query }) {
     preview: preview.small,
   }));
   return { props: { previews, channelName } };
-}
-
-async function getChannelsByName(channelName) {
-  try {
-    const response = await axios.get(API_SEARCH_URL(channelName), {
-      headers: API_HEADERS,
-    });
-    return response.data;
-  } catch (error) {
-    throw new Error(error.message);
-  }
-}
-
-async function getVideosByChannelId(channelId) {
-  try {
-    const response = await axios.get(API_VIDEOS_URL(channelId), {
-      headers: API_HEADERS,
-    });
-    return response.data;
-  } catch (error) {
-    throw new Error(error.message);
-  }
 }
