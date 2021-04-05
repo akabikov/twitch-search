@@ -5,9 +5,12 @@ const API_SEARCH_URL = (channelName) =>
 const API_VIDEOS_URL = (channelId) =>
   `https://api.twitch.tv/kraken/channels/${channelId}/videos?limit=20`;
 
+const API_VIDEO_URL = (videoId) =>
+  `https://api.twitch.tv/kraken/videos/${videoId}`;
+
 const API_HEADERS = {
   Accept: "application/vnd.twitchtv.v5+json",
-  "Client-ID": process.env.CLIENT_ID,
+  "Client-ID": process.env.NEXT_PUBLIC_CLIENT_ID,
 };
 
 async function get(url) {
@@ -15,9 +18,18 @@ async function get(url) {
     const response = await axios.get(url, {
       headers: API_HEADERS,
     });
-    return response.data;
+    if (response.status) return response.data;
   } catch (error) {
-    console.error(error.message);
+    if (error.response) {
+      console.error(error.response.status);
+      console.log(error.response.data);
+      console.log(error.response.headers);
+    } else if (error.request) {
+      console.log(error.request);
+    } else {
+      console.error("Error", error.message);
+    }
+    console.error(error);
   }
 }
 
@@ -29,3 +41,6 @@ export async function getVideosByChannelId(channelId) {
   return get(API_VIDEOS_URL(channelId));
 }
 
+export async function getVideoById(videoId) {
+  return get(API_VIDEO_URL(videoId));
+}
