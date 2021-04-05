@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import PreviewList from "../PreviewList";
 import { getVideoById } from "../../helpers/loading";
+import PreviewList from "../PreviewList";
+import styles from "./index.module.scss";
 
-function Bookmarks({ list, removeBookmark }) {
+function Bookmarks({ list, isOpen, removeBookmark }) {
   const [state, setState] = useState(null);
 
   useEffect(() => {
@@ -13,7 +14,7 @@ function Bookmarks({ list, removeBookmark }) {
           id: list[i],
           title,
           url,
-          preview: preview.small,
+          preview: preview.large,
         }))
       );
     }
@@ -22,10 +23,9 @@ function Bookmarks({ list, removeBookmark }) {
   }, [list]);
 
   return (
-    <>
-      <h2>Bookmarks</h2>
+    <div className={styles.Bookmarks + (isOpen ? "" : ` ${styles.hidden}`)}>
       {state && <PreviewList list={state} removeBookmark={removeBookmark} />}
-    </>
+    </div>
   );
 }
 

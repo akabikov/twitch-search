@@ -1,22 +1,29 @@
+import { useState } from "react";
 import SearchForm from "../components/SearchForm";
 import PreviewList from "../components/PreviewList";
 import Bookmarks from "../components/Bookmarks";
+import BookmarksOpenCloseButton from "../components/Bookmarks/OpenCloseButton";
 import useBookmarksState from "../hooks/useBookmarksState";
 import { getChannelsByName, getVideosByChannelId } from "../helpers/loading";
 
 const Index = ({ previews, channelName }) => {
   const [bookmarks, handlers] = useBookmarksState();
+  const [isBookmarksOpen, openCloseBookmarks] = useState(false);
 
   return (
     <>
-      <h1>Twitch search project</h1>
       <SearchForm value={channelName} />
+      <BookmarksOpenCloseButton toggle={openCloseBookmarks} />
       {previews.length ? (
         <PreviewList list={previews} addBookmark={handlers.add} />
       ) : (
         <div>Nothing found</div>
       )}
-      <Bookmarks list={bookmarks} removeBookmark={handlers.remove} />
+      <Bookmarks
+        list={bookmarks}
+        isOpen={isBookmarksOpen}
+        removeBookmark={handlers.remove}
+      />
     </>
   );
 };
@@ -34,7 +41,7 @@ export async function getServerSideProps({ query }) {
     id: _id.slice(1),
     title,
     url: url,
-    preview: preview.small,
+    preview: preview.large,
   }));
   return { props: { previews, channelName } };
 }
